@@ -20,5 +20,20 @@ Run, e.g. `./run.sh test/qsbr.o`
 Current models
 ==============
 
-- `test/qsbr.c`: simplified model of QSBR
-- `test/dict_value.c`: simplified model of Python dicts demonstrating need for release ordering
+QSBR
+----
+`./run.sh test/qsbr.o`
+
+A simplified model of QSBR.
+
+Dicts
+-----
+`./run.sh test/dict_value.o`
+
+Simulate dictionary updates.
+
+Seq Lock
+--------
+`./run.sh test/seqlock.o -m 10`
+
+Sequence locks. Used in updating type caches. Note that the test requires `-m` (liveness) to avoid an infinite loop in `_PySeqLock_BeginRead`. Larger values result in more executions. A value of `-m 1` seems sufficient to catch interesting bugs, but I'm using `-m 10` to be conservative.
