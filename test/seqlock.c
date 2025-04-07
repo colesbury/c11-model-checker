@@ -7,8 +7,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "pyatomic.h"
 #include "librace.h"
+
+typedef atomic_uintptr_t atomic_ptr;
+typedef atomic_uint atomic_uint32;
+
+#define _Py_atomic_load_uint32_relaxed(ptr) atomic_load_explicit(ptr, memory_order_relaxed)
+#define _Py_atomic_load_uint32_acquire(ptr) atomic_load_explicit(ptr, memory_order_acquire)
+#define _Py_atomic_store_uint32_relaxed(ptr, value) atomic_store_explicit(ptr, value, memory_order_relaxed)
+#define _Py_atomic_store_uint32(ptr, value) atomic_store_explicit(ptr, value, memory_order_seq_cst)
+#define _Py_atomic_compare_exchange_uint32(ptr, expected, desired) \
+    atomic_compare_exchange_strong_explicit(ptr, expected, desired, memory_order_seq_cst, memory_order_relaxed)
+
+#define _Py_atomic_load_ptr_relaxed(ptr) ((void *)atomic_load_explicit(ptr, memory_order_relaxed))
+#define _Py_atomic_store_ptr_relaxed(ptr, value) atomic_store_explicit(ptr, value, memory_order_relaxed)
+
+#define _Py_atomic_fence_acquire() atomic_thread_fence(memory_order_acquire)
+#define _Py_atomic_fence_release() atomic_thread_fence(memory_order_release)
+
+#define _Py_yield() thrd_yield()
 
 typedef struct _object {
     int id;
